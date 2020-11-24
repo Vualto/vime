@@ -84,6 +84,8 @@ export class Playground {
         return (<vime-vimeo videoId={this.src ?? (this.src = '411652396')} />);
       case Provider.Dailymotion:
         return (<vime-dailymotion videoId={this.src ?? (this.src = 'k3b11PemcuTrmWvYe0q')} />);
+      case Provider.Shaka:
+        return (<vime-shaka crossOrigin="" poster={this.poster} src={this.src ?? (this.src = `${BASE_MEDIA_URL}/mpd/manifest.mpd`)} />);
       default:
         return undefined;
     }

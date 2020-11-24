@@ -7,4 +7,5 @@ export enum Provider {
   Vimeo = 'vimeo',
   Dailymotion = 'dailymotion',
   FakeTube = 'faketube',
+  Shaka = 'shaka'
 }

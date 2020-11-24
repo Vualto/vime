@@ -1234,6 +1234,58 @@ export namespace Components {
          */
         "tooltipPosition": TooltipPosition;
     }
+    interface VimeShaka {
+        /**
+          * **EXPERIMENTAL:** Whether the browser should automatically toggle picture-in-picture mode as the user switches back and forth between this document and another document or application.
+          * @inheritdoc
+         */
+        "autoPiP"?: boolean;
+        "autoplay": boolean;
+        /**
+          * The `dashjs` configuration.
+         */
+        "config": Record<string, any>;
+        /**
+          * Determines what controls to show on the media element whenever the browser shows its own set of controls (e.g. when the controls attribute is specified).
+          * @inheritdoc
+         */
+        "controlsList"?: string;
+        /**
+          * Whether to use CORS to fetch the related image. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin) for more information.
+          * @inheritdoc
+         */
+        "crossOrigin"?: MediaCrossOriginOption;
+        /**
+          * **EXPERIMENTAL:** Prevents the browser from suggesting a picture-in-picture context menu or to request picture-in-picture automatically in some cases.
+          * @inheritdoc
+         */
+        "disablePiP"?: boolean;
+        /**
+          * **EXPERIMENTAL:** Whether to disable the capability of remote playback in devices that are attached using wired (HDMI, DVI, etc.) and wireless technologies (Miracast, Chromecast, DLNA, AirPlay, etc).
+          * @inheritdoc
+         */
+        "disableRemotePlayback"?: boolean;
+        "getAdapter": () => Promise<{ getInternalPlayer: () => Promise<any>; canPlay: (type: any) => Promise<boolean>; play: () => Promise<void | undefined>; pause: () => Promise<void | undefined>; setCurrentTime: (time: number) => Promise<void>; setMuted: (muted: boolean) => Promise<void>; setVolume: (volume: number) => Promise<void>; canSetPlaybackRate: () => Promise<boolean>; setPlaybackRate: (rate: number) => Promise<void>; canSetPlaybackQuality: () => Promise<boolean>; setPlaybackQuality: (quality: string) => Promise<void>; canSetPiP: () => Promise<boolean>; enterPiP: () => Promise<any>; exitPiP: () => Promise<any>; canSetFullscreen: () => Promise<boolean>; enterFullscreen: () => Promise<any>; exitFullscreen: () => Promise<any>; }>;
+        /**
+          * The title of the current media.
+         */
+        "mediaTitle"?: string;
+        /**
+          * A URL for an image to be shown while the video is downloading. If this attribute isn't specified, nothing is displayed until the first frame is available, then the first frame is shown as the poster frame.
+          * @inheritdoc
+         */
+        "poster"?: string;
+        /**
+          * Provides a hint to the browser about what the author thinks will lead to the best user experience with regards to what content is loaded before the video is played. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#attr-preload) for more information.
+          * @inheritdoc
+         */
+        "preload"?: MediaPreloadOption;
+        /**
+          * The URL of the `manifest.mpd` file to use.
+         */
+        "src": string;
+        "version": string;
+    }
     interface VimeSkeleton {
         /**
           * Determines which effect the skeleton will use.
@@ -1710,6 +1762,12 @@ declare global {
         prototype: HTMLVimeSettingsControlElement;
         new (): HTMLVimeSettingsControlElement;
     };
+    interface HTMLVimeShakaElement extends Components.VimeShaka, HTMLStencilElement {
+    }
+    var HTMLVimeShakaElement: {
+        prototype: HTMLVimeShakaElement;
+        new (): HTMLVimeShakaElement;
+    };
     interface HTMLVimeSkeletonElement extends Components.VimeSkeleton, HTMLStencilElement {
     }
     var HTMLVimeSkeletonElement: {
@@ -1821,6 +1879,7 @@ declare global {
         "vime-scrubber-control": HTMLVimeScrubberControlElement;
         "vime-settings": HTMLVimeSettingsElement;
         "vime-settings-control": HTMLVimeSettingsControlElement;
+        "vime-shaka": HTMLVimeShakaElement;
         "vime-skeleton": HTMLVimeSkeletonElement;
         "vime-slider": HTMLVimeSliderElement;
         "vime-spinner": HTMLVimeSpinnerElement;
@@ -3202,6 +3261,58 @@ declare namespace LocalJSX {
          */
         "tooltipPosition"?: TooltipPosition;
     }
+    interface VimeShaka {
+        /**
+          * **EXPERIMENTAL:** Whether the browser should automatically toggle picture-in-picture mode as the user switches back and forth between this document and another document or application.
+          * @inheritdoc
+         */
+        "autoPiP"?: boolean;
+        "autoplay"?: boolean;
+        /**
+          * The `dashjs` configuration.
+         */
+        "config"?: Record<string, any>;
+        /**
+          * Determines what controls to show on the media element whenever the browser shows its own set of controls (e.g. when the controls attribute is specified).
+          * @inheritdoc
+         */
+        "controlsList"?: string;
+        /**
+          * Whether to use CORS to fetch the related image. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin) for more information.
+          * @inheritdoc
+         */
+        "crossOrigin"?: MediaCrossOriginOption;
+        /**
+          * **EXPERIMENTAL:** Prevents the browser from suggesting a picture-in-picture context menu or to request picture-in-picture automatically in some cases.
+          * @inheritdoc
+         */
+        "disablePiP"?: boolean;
+        /**
+          * **EXPERIMENTAL:** Whether to disable the capability of remote playback in devices that are attached using wired (HDMI, DVI, etc.) and wireless technologies (Miracast, Chromecast, DLNA, AirPlay, etc).
+          * @inheritdoc
+         */
+        "disableRemotePlayback"?: boolean;
+        /**
+          * The title of the current media.
+         */
+        "mediaTitle"?: string;
+        "onVLoadStart"?: (event: CustomEvent<void>) => void;
+        /**
+          * A URL for an image to be shown while the video is downloading. If this attribute isn't specified, nothing is displayed until the first frame is available, then the first frame is shown as the poster frame.
+          * @inheritdoc
+         */
+        "poster"?: string;
+        /**
+          * Provides a hint to the browser about what the author thinks will lead to the best user experience with regards to what content is loaded before the video is played. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#attr-preload) for more information.
+          * @inheritdoc
+         */
+        "preload"?: MediaPreloadOption;
+        /**
+          * The URL of the `manifest.mpd` file to use.
+         */
+        "src": string;
+        "version"?: string;
+    }
     interface VimeSkeleton {
         /**
           * Determines which effect the skeleton will use.
@@ -3498,6 +3609,7 @@ declare namespace LocalJSX {
         "vime-scrubber-control": VimeScrubberControl;
         "vime-settings": VimeSettings;
         "vime-settings-control": VimeSettingsControl;
+        "vime-shaka": VimeShaka;
         "vime-skeleton": VimeSkeleton;
         "vime-slider": VimeSlider;
         "vime-spinner": VimeSpinner;
@@ -3554,6 +3666,7 @@ declare module "@stencil/core" {
             "vime-scrubber-control": LocalJSX.VimeScrubberControl & JSXBase.HTMLAttributes<HTMLVimeScrubberControlElement>;
             "vime-settings": LocalJSX.VimeSettings & JSXBase.HTMLAttributes<HTMLVimeSettingsElement>;
             "vime-settings-control": LocalJSX.VimeSettingsControl & JSXBase.HTMLAttributes<HTMLVimeSettingsControlElement>;
+            "vime-shaka": LocalJSX.VimeShaka & JSXBase.HTMLAttributes<HTMLVimeShakaElement>;
             "vime-skeleton": LocalJSX.VimeSkeleton & JSXBase.HTMLAttributes<HTMLVimeSkeletonElement>;
             "vime-slider": LocalJSX.VimeSlider & JSXBase.HTMLAttributes<HTMLVimeSliderElement>;
             "vime-spinner": LocalJSX.VimeSpinner & JSXBase.HTMLAttributes<HTMLVimeSpinnerElement>;
