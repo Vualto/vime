@@ -107,12 +107,24 @@ export class Shaka implements MediaFileProvider<any> {
     try {
         const url = `https://cdnjs.cloudflare.com/ajax/libs/shaka-player/${this.version}/shaka-player.compiled.js`;
         const ShakaSDK = await loadSDK(url, 'shaka');
+        var shaka: any;
+
+        if (!shaka.Player.isBrowserSupported()) {
+            this.dispatch('errors', [new Error('Shaka player is not supported on this browser')]);
+        }
 
         this.shaka = new ShakaSDK.Player(this.mediaEl);
         this.mediaEl!.addEventListener('canplay', () => {
             this.dispatch('mediaType', MediaType.Video);
             this.dispatch('currentSrc', this.src);
             this.dispatch('playbackReady', true);
+        });
+
+        this.shaka?.addEventListener('trackschanged', () => {
+            let tracks = this.shaka?.getTextTracks();
+            debugger;
+            console.log(tracks);
+            this.dispatch('textTracks', tracks);
         });
 
         this.hasAttached = true;
@@ -122,8 +134,8 @@ export class Shaka implements MediaFileProvider<any> {
   }
 
   private async destroyShaka() {
-    // TODO look at shaka reset?
-    this.shaka?.reset();
+    this.shaka?.unload();
+    this.shaka?.destroy();
     this.hasAttached = false;
   }
 
