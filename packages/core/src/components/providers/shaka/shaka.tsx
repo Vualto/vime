@@ -1,48 +1,64 @@
-import { EventEmitter, Prop, State, Watch, Event, Listen, h, Method, Component } from "@stencil/core";
+import {
+  EventEmitter,
+  Prop,
+  State,
+  Watch,
+  Event,
+  Listen,
+  h,
+  Method,
+  Component,
+} from "@stencil/core";
 import { isUndefined, isString } from "util";
 import { MediaType, withPlayerContext } from "../../..";
 import { loadSDK } from "../../../utils/network";
-import { MediaCrossOriginOption, MediaFileProvider, MediaPreloadOption } from "../file/MediaFileProvider";
+import {
+  MediaCrossOriginOption,
+  MediaFileProvider,
+  MediaPreloadOption,
+} from "../file/MediaFileProvider";
 import { dashRegex } from "../file/utils";
 import { withProviderConnect } from "../MediaProvider";
-import { createProviderDispatcher, ProviderDispatcher } from "../ProviderDispatcher";
+import {
+  createProviderDispatcher,
+  ProviderDispatcher,
+} from "../ProviderDispatcher";
 
 @Component({
-  tag: 'vime-shaka',
+  tag: "vime-shaka",
 })
 export class Shaka implements MediaFileProvider<any> {
+  private shaka?: any;
 
-    private shaka?: any;
+  private dispatch!: ProviderDispatcher;
 
-    private dispatch!: ProviderDispatcher;
+  private mediaEl?: HTMLVideoElement;
 
-    private mediaEl?: HTMLVideoElement;
+  private videoProvider!: HTMLVimeVideoElement;
 
-    private videoProvider!: HTMLVimeVideoElement;
+  @State() hasAttached = false;
 
-    @State() hasAttached = false;
+  /**
+   * The URL of the `manifest.mpd` file to use.
+   */
+  @Prop() src!: string;
 
-    /**
-     * The URL of the `manifest.mpd` file to use.
-     */
-    @Prop() src!: string;
-
-    @Watch('src')
-    @Watch('hasAttached')
-    onSrcChange() {
+  @Watch("src")
+  @Watch("hasAttached")
+  onSrcChange() {
     if (!this.hasAttached) return;
-        this.vLoadStart.emit();
-        this.shaka!.load(this.src);
-    }
+    this.vLoadStart.emit();
+    this.shaka!.load(this.src);
+  }
 
-    @Prop() version = '3.0.5';
+  @Prop() version = "3.0.5";
 
   /**
    * The `dashjs` configuration.
    */
-  @Prop({ attribute: 'config' }) config: Record<string, any> = {};
+  @Prop({ attribute: "config" }) config: Record<string, any> = {};
 
-    @Prop() autoplay = false;
+  @Prop() autoplay = false;
 
   /**
    * @inheritdoc
@@ -52,7 +68,7 @@ export class Shaka implements MediaFileProvider<any> {
   /**
    * @inheritdoc
    */
-  @Prop() preload?: MediaPreloadOption = 'metadata';
+  @Prop() preload?: MediaPreloadOption = "metadata";
 
   /**
    * @inheritdoc
@@ -67,12 +83,12 @@ export class Shaka implements MediaFileProvider<any> {
   /**
    * @inheritdoc
    */
-  @Prop({ attribute: 'auto-pip' }) autoPiP?: boolean;
+  @Prop({ attribute: "auto-pip" }) autoPiP?: boolean;
 
   /**
    * @inheritdoc
    */
-  @Prop({ attribute: 'disable-pip' }) disablePiP?: boolean;
+  @Prop({ attribute: "disable-pip" }) disablePiP?: boolean;
 
   /**
    * @inheritdoc
@@ -91,7 +107,7 @@ export class Shaka implements MediaFileProvider<any> {
 
   constructor() {
     withProviderConnect(this);
-    withPlayerContext(this, ['autoplay']);
+    withPlayerContext(this, ["autoplay"]);
   }
 
   connectedCallback() {
@@ -105,31 +121,32 @@ export class Shaka implements MediaFileProvider<any> {
 
   private async setupShaka() {
     try {
-        const url = `https://cdnjs.cloudflare.com/ajax/libs/shaka-player/${this.version}/shaka-player.compiled.js`;
-        const ShakaSDK = await loadSDK(url, 'shaka');
-        var shaka: any;
+      const url = `https://cdnjs.cloudflare.com/ajax/libs/shaka-player/${this.version}/shaka-player.compiled.js`;
+      const ShakaSDK = await loadSDK(url, "shaka");
 
-        if (!shaka.Player.isBrowserSupported()) {
-            this.dispatch('errors', [new Error('Shaka player is not supported on this browser')]);
-        }
+      if (!ShakaSDK.Player.isBrowserSupported()) {
+        this.dispatch("errors", [
+          new Error("Shaka player is not supported on this browser"),
+        ]);
+      }
 
-        this.shaka = new ShakaSDK.Player(this.mediaEl);
-        this.mediaEl!.addEventListener('canplay', () => {
-            this.dispatch('mediaType', MediaType.Video);
-            this.dispatch('currentSrc', this.src);
-            this.dispatch('playbackReady', true);
-        });
+      this.shaka = new ShakaSDK.Player(this.mediaEl);
+      this.mediaEl!.addEventListener("canplay", () => {
+        this.dispatch("mediaType", MediaType.Video);
+        this.dispatch("currentSrc", this.src);
+        this.dispatch("playbackReady", true);
+      });
 
-        this.shaka?.addEventListener('trackschanged', () => {
-            let tracks = this.shaka?.getTextTracks();
-            debugger;
-            console.log(tracks);
-            this.dispatch('textTracks', tracks);
-        });
+      // this.shaka?.addEventListener('trackschanged', () => {
+      //     let tracks = this.shaka?.getTextTracks();
+      //     debugger;
+      //     console.log(tracks);
+      //     this.dispatch('textTracks', tracks);
+      // });
 
-        this.hasAttached = true;
+      this.hasAttached = true;
     } catch (e) {
-      this.dispatch('errors', [e]);
+      this.dispatch("errors", [e]);
     }
   }
 
@@ -139,7 +156,7 @@ export class Shaka implements MediaFileProvider<any> {
     this.hasAttached = false;
   }
 
-  @Listen('vMediaElChange')
+  @Listen("vMediaElChange")
   async onMediaElChange(event: CustomEvent<HTMLVideoElement | undefined>) {
     this.destroyShaka();
     if (isUndefined(event.detail)) return;
@@ -157,8 +174,8 @@ export class Shaka implements MediaFileProvider<any> {
     return {
       ...adapter,
       getInternalPlayer: async () => this.shaka,
-      canPlay: async (type: any) => (isString(type) && dashRegex.test(type))
-        || canVideoProviderPlay(type),
+      canPlay: async (type: any) =>
+        (isString(type) && dashRegex.test(type)) || canVideoProviderPlay(type),
     };
   }
 
@@ -174,9 +191,10 @@ export class Shaka implements MediaFileProvider<any> {
         disablePiP={this.disablePiP}
         disableRemotePlayback={this.disableRemotePlayback}
         mediaTitle={this.mediaTitle}
-        ref={(el: any) => { this.videoProvider = el; }}
+        ref={(el: any) => {
+          this.videoProvider = el;
+        }}
       />
     );
   }
-    
 }
